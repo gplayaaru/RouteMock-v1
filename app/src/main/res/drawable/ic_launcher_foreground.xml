@@ -12,14 +12,13 @@
         android:strokeColor="#FFFFFF"
         android:strokeLineCap="round"
         android:strokeLineJoin="round" />
-    <circle
+    <!-- NOTE: Android vector drawables do NOT support a circle element
+         with android:cx / android:cy / android:r (those are SVG attributes,
+         AAPT rejects them). Draw the two dots as arc paths instead. -->
+    <path
         android:fillColor="#FFFFFF"
-        android:cx="30"
-        android:cy="78"
-        android:r="7" />
-    <circle
+        android:pathData="M23,78 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 Z" />
+    <path
         android:fillColor="#FFFFFF"
-        android:cx="78"
-        android:cy="30"
-        android:r="7" />
+        android:pathData="M71,30 a7,7 0 1,0 14,0 a7,7 0 1,0 -14,0 Z" />
 </vector>
