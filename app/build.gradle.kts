@@ -53,6 +53,11 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    // View-based Material 3 theme (themes.xml parent
+    // Theme.Material3.DayNight.NoActionBar) comes from this library,
+    // NOT from androidx.compose.material3 — without it the build fails
+    // at processDebugResources with "style/Theme.Material3... not found".
+    implementation("com.google.android.material:material:1.12.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
 
     // Networking: Retrofit + Gson + OkHttp (OSRM + Nominatim).
