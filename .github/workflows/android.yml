@@ -40,8 +40,16 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      # NOTE (2026-11-12 fix): android-actions/setup-android@v3 failed
+      # here because it tries to install the obsolete "tools" package
+      # via sdkmanager ("Failed to find package 'tools'"). The
+      # ubuntu-latest runner already ships an Android SDK with
+      # cmdline-tools/latest, so install only the packages this
+      # project needs (platform 34 + build-tools 34.0.0) directly.
+      - name: Install Android SDK packages
+        run: |
+          yes | "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --licenses
+          "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" "platform-tools" "platforms;android-34" "build-tools;34.0.0"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v3
