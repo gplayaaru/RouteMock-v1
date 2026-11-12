@@ -270,11 +270,12 @@ class MockLocationService : Service() {
                 speedAccuracyMetersPerSecond = 0.5f
                 time = System.currentTimeMillis()
                 elapsedRealtimeNanos = SystemClock.elapsedRealtimeNanos()
-                // makeComplete() exists from API 31; below that the fields
-                // above are already set, so there is nothing to complete.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    makeComplete()
-                }
+                // NOTE: there is no Location.makeComplete() in the public
+                // Android API (verified against the official Location
+                // reference — only isComplete() exists). It was an invented
+                // call and broke compileDebugKotlin in CI run #5, so it is
+                // removed. The fields above already make the fix complete:
+                // provider + accuracy + non-zero time + elapsed realtime.
             }
             try {
                 manager.setTestProviderLocation(provider, location)
