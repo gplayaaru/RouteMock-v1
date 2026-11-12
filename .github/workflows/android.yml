@@ -1,0 +1,57 @@
+# RouteMock v0.1 — build a debug APK on every push to main.
+#
+# Purpose: the user gets an installable APK from GitHub Actions without
+# needing Android Studio on their laptop.
+#
+# NOTE: this workflow is UNTESTED here. Gradle cannot run in this VM
+# (known DaemonConnectionException / "Unexpected type tag 109"), so the
+# workflow has never been run end-to-end. If the first run fails, paste
+# the failing step's log back and fix that step only.
+#
+# How to use (also in README.md):
+#   1. Push this code to a GitHub repo (branch: main).
+#   2. Open the repo on GitHub > Actions tab > "Android CI" run.
+#   3. When the run is green, scroll to "Artifacts" at the bottom of the
+#      run page and download "routemock-debug-apk".
+#   4. Unzip it, copy app-debug.apk to the phone, tap it to install
+#      (allow "install unknown apps" for the browser/files app if asked).
+#   5. Then follow README.md: Developer Options > mock-location app.
+
+name: Android CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug --stacktrace
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: routemock-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
